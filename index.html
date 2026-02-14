@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Valentine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@300;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fff5f5;
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --accent: #ff85a2;
+            --text-color: #4a4a4a;
+            --deep-rose: #d63384;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background: linear-gradient(135deg, #fce4ec 0%, #ffe0e0 100%);
+            font-family: 'Quicksand', sans-serif;
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        /* Background floating elements */
+        .bg-heart {
+            position: absolute;
+            color: rgba(255, 133, 162, 0.2);
+            font-size: 20px;
+            pointer-events: none;
+            animation: floatBackground 10s linear infinite;
+        }
+
+        @keyframes floatBackground {
+            0% { transform: translateY(110vh) rotate(0deg); }
+            100% { transform: translateY(-10vh) rotate(360deg); }
+        }
+
+        .screen {
+            position: relative; z-index: 10;
+            text-align: center;
+            display: none;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(255, 133, 162, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            max-width: 450px;
+            width: 90%;
+        }
+
+        .active { display: block; animation: softFade 1s; }
+
+        /* Photo Styles */
+        .photo-container {
+            width: 100%;
+            height: 250px;
+            border-radius: 20px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 5px solid white;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.5s ease;
+        }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: var(--deep-rose); margin: 10px 0; }
+        p { font-size: 1.1rem; line-height: 1.4; color: #666; }
+
+        .btn {
+            background: var(--accent);
+            border: none;
+            color: white;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            border-radius: 50px;
+            margin-top: 20px;
+            transition: all 0.3s;
+        }
+
+        .btn:hover { 
+            transform: scale(1.05);
+            background: var(--deep-rose);
+        }
+
+        #noBtn { position: absolute; background: #ccd5ae; }
+
+        @keyframes softFade { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop>
+        <source src="audio.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="screen active" id="screen1">
+        <div style="font-size: 50px; margin-bottom: 20px;">🌸</div>
+        <h1> Meow Sundu </h1>
+        <p>I have something for you 😽.</p>
+        <button class="btn" onclick="startExperience()">Open It</button>
+    </div>
+
+    <div class="screen" id="screen2">
+        <div class="photo-container">
+            <img id="slidePhoto" src="photo1.jpg" alt="Our Memory">
+        </div>
+        <h1 id="slideText" style="font-size: 2rem;">I think they call this love...</h1>
+    </div>
+
+    <div class="screen" id="screen3">
+        <div class="photo-container">
+            <img src="photo5.jpg" alt="Us">
+        </div>
+        <h2 style="color: var(--deep-rose); font-family: 'Dancing Script'; font-size: 2.5rem; margin:0;">Will you be my Valentine?</h2>
+        <div style="margin-top: 20px; height: 60px; position: relative;">
+            <button class="btn" id="yesBtn" onclick="finalCelebrate()">Yes!</button>
+            <button class="btn" id="noBtn" onmouseover="moveNo()">No</button>
+        </div>
+    </div>
+
+    <script>
+        // Array of objects containing text and matching images
+        const content = [
+            { text: "when i tell you I Love You i don't say out of habit ", img: "photo1.jpg" },
+            { text: "i say it to remind you are the best thing that has ever happened to me", img: "photo2.jpg" },
+            { text: "no matter where you are", img: "photo3.jpg" },
+            { text: "you wll be always be a part of me ❤️", img: "photo4.jpg" }
+        ];
+
+        let currentIndex = 0;
+        const audio = document.getElementById('bgMusic');
+        const slideText = document.getElementById('slideText');
+        const slideImg = document.getElementById('slidePhoto');
+
+        function startExperience() {
+            audio.play();
+            showScreen('screen2');
+            nextSlide();
+        }
+
+        function nextSlide() {
+            if (currentIndex < content.length) {
+                // Fade out
+                slideText.style.opacity = 0;
+                slideImg.style.opacity = 0;
+
+                setTimeout(() => {
+                    // Change content
+                    slideText.innerText = content[currentIndex].text;
+                    slideImg.src = content[currentIndex].img;
+                    
+                    // Fade in
+                    slideText.style.opacity = 1;
+                    slideImg.style.opacity = 1;
+                    
+                    currentIndex++;
+                    setTimeout(nextSlide, 3500);
+                }, 500);
+            } else {
+                showScreen('screen3');
+            }
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function moveNo() {
+            const btn = document.getElementById('noBtn');
+            btn.style.position = 'fixed';
+            btn.style.left = Math.random() * 70 + 'vw';
+            btn.style.top = Math.random() * 70 + 'vh';
+        }
+
+        function finalCelebrate() {
+            document.getElementById('screen3').innerHTML = `
+                <h1 style="font-size: 3rem;">💍 ❤️ 🥰</h1>
+                <h1>hehe i knew it!😉</h1>
+                <p>Daii skiii ❤️❤️❤️❤️❤️❤️😽😽😽😽</p>
+            `;
+            setInterval(createHeart, 200);
+        }
+
+        // Background Hearts Generation
+        for(let i=0; i<15; i++) {
+            const h = document.createElement('div');
+            h.className = 'bg-heart';
+            h.innerHTML = '🌸';
+            h.style.left = Math.random() * 100 + 'vw';
+            h.style.animationDelay = Math.random() * 10 + 's';
+            document.body.appendChild(h);
+        }
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.style.position = 'fixed';
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.top = '100vh';
+            document.body.appendChild(heart);
+            heart.animate([
+                { transform: 'translateY(0)', opacity: 1 },
+                { transform: `translateY(-110vh) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+            ], { duration: 3000 });
+            setTimeout(() => heart.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
